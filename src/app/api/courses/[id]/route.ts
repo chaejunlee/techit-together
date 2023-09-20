@@ -26,6 +26,7 @@ export interface Courses {
 export interface PostCourses {
     name: string;
     email: string;
+    title: string;
     course: Course;
 }
 
@@ -77,7 +78,7 @@ export async function POST(
 
         await kv.set(emailAndCourse, json);
     } catch (e) {
-        return NextResponse.json({ success: false }, { status: 400 })
+        return NextResponse.json({ success: false, error: e}, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
