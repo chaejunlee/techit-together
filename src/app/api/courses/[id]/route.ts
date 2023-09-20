@@ -66,9 +66,15 @@ export async function POST(
     const emailAndCourse = `${json.email}:${json.course}`;
 
     try {
-        const inClass = await kv.lrange(params.id, 0, -1);
-        if (!inClass.includes(emailAndCourse))
+        const classLength = await kv.llen(params.id);
+        if (classLength === 0) {
             await kv.lpush(params.id, emailAndCourse);
+        } else {
+            const inClass = await kv.lrange(params.id, 0, -1);
+            if (!inClass.includes(emailAndCourse))
+                await kv.lpush(params.id, emailAndCourse);
+        }
+
         await kv.set(emailAndCourse, json);
     } catch (e) {
         return NextResponse.json({ success: false }, { status: 400 })
