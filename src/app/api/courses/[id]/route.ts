@@ -6,7 +6,7 @@ export async function GET(
     { params }: { params: { id: string } }
 ) {
     const id = params.id;
-    const classMembers = kv.get(id);
+    const classMembers = await kv.get(id);
 
     return NextResponse.json(classMembers);
 }
@@ -33,7 +33,7 @@ export async function POST(
     const json = await request.json() as Courses;
 
     try {
-        kv.set(params.id, json);
+        await kv.set(params.id, json);
     } catch (e) {
         return NextResponse.json({ success: false }, { status: 400 })
     }
