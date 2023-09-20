@@ -42,6 +42,7 @@ async function getProgress() {
         const progress = {
             ...user,
             title: courseTitle,
+            code: courseId,
             course
         }
 
@@ -52,7 +53,7 @@ async function getProgress() {
 }
 
 function uuid() {
-    return "1234";
+    return "123";
 }
 
 (async () => {

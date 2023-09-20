@@ -27,6 +27,7 @@ export interface PostCourses {
     name: string;
     email: string;
     title: string;
+    code: string;
     course: Course;
 }
 
@@ -64,21 +65,27 @@ export async function POST(
     { params }: { params: { id: string } }
 ) {
     const json = await request.json() as PostCourses;
-    const emailAndCourse = `${json.email}:${json.course}`;
+    const emailAndCourseCode = `${json.email}:${json.code}`;
 
     try {
         const classLength = await kv.llen(params.id);
+
         if (classLength === 0) {
-            await kv.lpush(params.id, emailAndCourse);
+
+            await kv.lpush(params.id, emailAndCourseCode);
+
         } else {
+
             const inClass = await kv.lrange(params.id, 0, -1);
-            if (!inClass.includes(emailAndCourse))
-                await kv.lpush(params.id, emailAndCourse);
+
+            if (!inClass.includes(emailAndCourseCode))
+                await kv.lpush(params.id, emailAndCourseCode);
+
         }
 
-        await kv.set(emailAndCourse, json);
+        await kv.set(emailAndCourseCode, json);
     } catch (e) {
-        return NextResponse.json({ success: false, error: e}, { status: 400 })
+        return NextResponse.json({ success: false, error: e }, { status: 400 })
     }
 
     return NextResponse.json({ success: true }, { status: 200 })
