@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Techit Together",
+  "description": "Share the learning progress of Techit Course!",
+  "version": "1.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "extensions.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["inject.js"],
+      "matches": ["https://techit.education/*"]
+    }
+  ],
+  "permissions": ["storage", "tabs", "activeTab", "scripting"]
+}
