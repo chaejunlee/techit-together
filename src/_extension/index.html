@@ -3,11 +3,24 @@
     <script src="script.js" defer></script>
     <script src="inject.js" defer></script>
     <title>Techit Together</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Techit Together</h1>
-    <h2 class="greeting">Hello, <span class="your-name">friend</span>.</h2>
-    <input type="text" class="classroom" placeholder="Enter your classroom" />
-    <button class="btn">Sync</button>
+    <h1 class="text-center">Techit Together</h1>
+    <h2 class="greeting text-center">
+      Hello, <span class="your-name">friend</span>.
+    </h2>
+
+    <label for="classroom" class="block classroom-label pb-2">Classroom</label>
+    <input
+      id="classroom"
+      type="text"
+      class="classroom"
+      placeholder="Enter your classroom" />
+
+    <div class="flex flex-col gap pt-4">
+      <button class="btn button">Sync</button>
+      <button class="go-to-dashboard button">Dashboard</button>
+    </div>
   </body>
 </html>

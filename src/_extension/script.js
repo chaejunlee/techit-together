@@ -79,7 +79,6 @@ async function buttonClick() {
         const progress = await getProgress();
         const id = getClassroomId();
 
-        console.log(id);
         window.localStorage.setItem("techit_likelion_classroom", id);
 
         await fetch(`https://techit-together.vercel.app/api/courses/${id}`, {
@@ -93,18 +92,41 @@ async function buttonClick() {
     } catch (e) {
         alert(e.message);
     }
-
 }
 
 const button = document.querySelector(".btn");
 button.addEventListener("click", () => buttonClick());
+button.setAttribute("disabled", true);
+
+const goToDashboard = document.querySelector(".go-to-dashboard");
+goToDashboard.setAttribute("disabled", true);
+goToDashboard.addEventListener("click", () => {
+    const classroom = getClassroomId();
+    if (classroom) {
+        chrome.tabs.create({ url: "https://techit-together.vercel.app/api/courses/" + classroom });
+    }
+});
+
+const input = document.querySelector(".classroom");
+input.addEventListener("input", () => {
+    if (input.value.length > 0) {
+        button.removeAttribute("disabled");
+        goToDashboard.removeAttribute("disabled");
+    } else {
+        button.setAttribute("disabled", true);
+        goToDashboard.setAttribute("disabled", true);
+    }
+});
+
+const classroom = window.localStorage.getItem("techit_likelion_classroom");
+if (classroom) {
+    input.value = classroom;
+    button.removeAttribute("disabled");
+    goToDashboard.removeAttribute("disabled");
+}
 
 (async () => {
-    const input = document.querySelector(".classroom");
-
-    const classroom = window.localStorage.getItem("techit_likelion_classroom");
-    console.log(classroom);
-    if (classroom) {
-        input.value = classroom;
-    }
+    const { name } = await getUserInfo();
+    const yourname = document.querySelector(".your-name");
+    yourname.innerText = name;
 })()
