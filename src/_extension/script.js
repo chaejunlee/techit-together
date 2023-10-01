@@ -47,7 +47,7 @@ async function getUserInfo() {
 }
 
 async function getProgress() {
-    const user = getUserInfo();
+    const user = await getUserInfo();
 
     try {
         const tab = await getCurrentTab();
