@@ -73,8 +73,8 @@ function parseData(obj) {
     return obj.result;
 }
 
-function getClassroomId() {
-    const input = document.querySelector(".classroom");
+function getTeamId() {
+    const input = document.querySelector(".team");
     return input.value;
 }
 
@@ -88,9 +88,9 @@ async function buttonClick() {
         button.innerHTML = SYNC_BUTTON_CONTENT + '<span class="spin ml-2">🔄</span>';
 
         const progress = await getProgress();
-        const id = getClassroomId();
+        const id = getTeamId();
 
-        window.localStorage.setItem("techit_likelion_classroom", id);
+        window.localStorage.setItem("techit_likelion_team", id);
 
         const res = await fetch(`https://techit-together.vercel.app/api/courses/${id}`, {
             method: 'POST',
@@ -123,13 +123,13 @@ async function buttonClick() {
 const goToDashboard = document.querySelector(".go-to-dashboard");
 goToDashboard.setAttribute("disabled", true);
 goToDashboard.addEventListener("click", () => {
-    const classroom = getClassroomId();
-    if (classroom) {
-        chrome.tabs.create({ url: "https://techit-together.vercel.app/api/courses/" + classroom });
+    const team = getTeamId();
+    if (team) {
+        chrome.tabs.create({ url: "https://techit-together.vercel.app/api/courses/" + team });
     }
 });
 
-const input = document.querySelector(".classroom");
+const input = document.querySelector(".team");
 input.addEventListener("input", () => {
     if (input.value.length > 0) {
         button.removeAttribute("disabled");
@@ -140,9 +140,57 @@ input.addEventListener("input", () => {
     }
 });
 
-const classroom = window.localStorage.getItem("techit_likelion_classroom");
-if (classroom) {
-    input.value = classroom;
+async function getTeamList(team) {
+    const res = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(["aaaaaaaaaa", "aab", "aabbbccccc"]);
+        }, 100)
+    });
+    return res.filter(data => {
+        return data.includes(team)
+    })
+}
+
+/**
+ * @type {HTMLUListElement}
+ */
+const dropdown = document.querySelector(".dropdown-menu");
+const dropdownResizeObserver = new ResizeObserver((entries) => {
+    const { height } = entries[0].contentRect;
+    if (height > 0) {
+        dropdown.style.border = "1px solid #ced4da";
+    } else {
+        dropdown.style.border = "none";
+    }
+});
+dropdownResizeObserver.observe(dropdown);
+
+input.addEventListener("keyup", async (e) => {
+    if (dropdown.getBoundingClientRect().height < 1) {
+        dropdown.style.border = "none";
+    }
+    if (e.key === "Enter") {
+        buttonClick();
+    }
+    const matchingTeams = await getTeamList(e.target.value);
+    dropdown.innerHTML = "";
+    matchingTeams.forEach((team, idx) => {
+        const li = document.createElement("li");
+        li.classList.add("dropdown-item");
+        li.style.cursor = "pointer";
+        li.tabIndex = 0;
+        li.innerText = team;
+        li.addEventListener("click", () => {
+            e.target.value = team;
+            dropdown.innerHTML = "";
+        });
+        dropdown.appendChild(li);
+    });
+});
+
+const team = window.localStorage.getItem("techit_likelion_team");
+if (team) {
+    input.value = team;
     button.removeAttribute("disabled");
     goToDashboard.removeAttribute("disabled");
 }

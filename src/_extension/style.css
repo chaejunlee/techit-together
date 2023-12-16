@@ -25,6 +25,10 @@ body {
   flex-direction: column;
 }
 
+.relative {
+  position: relative;
+}
+
 .justify-center {
   justify-content: center;
 }
@@ -49,7 +53,7 @@ body {
   margin-left: 0.5rem;
 }
 
-.classroom {
+.team {
   display: block;
   border: 0;
   border-bottom: 2px solid gray;
@@ -58,14 +62,33 @@ body {
   transition: border-bottom 0.2s ease-in-out;
 }
 
-.classroom:focus {
+.team:focus {
   outline: none;
   border-bottom: 2px solid orange;
 }
 
-.classroom-label {
+.team-label {
   font-size: large;
   font-weight: bold;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid gray;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  padding-left: 0;
+  margin-top: 2.5rem;
+
+  & li {
+    list-style: none;
+    padding: 0.5rem;
+    margin: 0;
+  }
 }
 
 @keyframes spin {
