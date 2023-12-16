@@ -25,6 +25,10 @@ body {
   flex-direction: column;
 }
 
+.justify-center {
+  justify-content: center;
+}
+
 .gap {
   gap: 0.5rem;
 }
@@ -35,6 +39,14 @@ body {
 
 .pt-4 {
   padding-top: 1rem;
+}
+
+.py-2 {
+  padding-block: 0.5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
 
 .classroom {
@@ -54,4 +66,18 @@ body {
 .classroom-label {
   font-size: large;
   font-weight: bold;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 2s linear infinite;
 }

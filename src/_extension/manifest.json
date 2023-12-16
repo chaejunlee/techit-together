@@ -13,5 +13,6 @@
       "matches": ["https://techit.education/*"]
     }
   ],
-  "permissions": ["storage", "tabs", "activeTab", "scripting"]
+  "permissions": ["storage", "tabs", "activeTab", "scripting"],
+  "host_permissions": ["https://techit-together.vercel.app/"]
 }

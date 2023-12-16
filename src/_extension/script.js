@@ -80,29 +80,48 @@ function getClassroomId() {
     return input.value;
 }
 
+const button = document.querySelector(".btn");
+button.addEventListener("click", () => buttonClick());
+button.setAttribute("disabled", true);
+const SYNC_BUTTON_CONTENT = "Sync";
+
 async function buttonClick() {
     try {
+        button.innerHTML = SYNC_BUTTON_CONTENT + '<span class="spin ml-2">🔄</span>';
+
         const progress = await getProgress();
         const id = getClassroomId();
 
         window.localStorage.setItem("techit_likelion_classroom", id);
 
-        await fetch(`https://techit-together.vercel.app/api/courses/${id}`, {
+        const res = await fetch(`https://techit-together.vercel.app/api/courses/${id}`, {
             method: 'POST',
-            mode: "no-cors",
+            mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(progress),
         })
+
+        const data = await res.json();
+
+        if (data?.success) {
+            button.innerHTML = SYNC_BUTTON_CONTENT + '<span class="ml-2">✅</span>';
+
+            const completed = progress.course.filter(v => v.finished).length;
+            const total = progress.course.length;
+            const percentage = Math.floor(completed / total * 100);
+            const message = `🎉 ${progress.name}님의 ${progress.title} 강의 ${completed}/${total}개 완료! (${percentage}%)`;
+
+            alert(message);
+        } else {
+            button.innerHTML = SYNC_BUTTON_CONTENT + '<span class="ml-2">❌</span>';
+        }
     } catch (e) {
-        alert(e.message);
+        button.innerHTML = SYNC_BUTTON_CONTENT + '<span class="ml-2">❌</span>';
+        console.log(e.message);
     }
 }
-
-const button = document.querySelector(".btn");
-button.addEventListener("click", () => buttonClick());
-button.setAttribute("disabled", true);
 
 const goToDashboard = document.querySelector(".go-to-dashboard");
 goToDashboard.setAttribute("disabled", true);
