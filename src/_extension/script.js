@@ -1,51 +1,3 @@
-async function getCurrentTab() {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tab = tabs[0];
-
-    return tab;
-}
-
-function parseData(obj) {
-    return obj.result;
-}
-
-async function getToken(key) {
-    const token = await chrome.storage.session.get([key]);
-    return token[key];
-}
-
-async function getCourse(url) {
-    try {
-        const auth = await getToken("access_token");
-        const response = await fetch("https://api.techit.education/api/my/progress/v1/" + url, { headers: { "Authorization": `Bearer ${auth}` } });
-        const lectures = await response.json();
-        const reducedLectures = lectures.reduce((acc, cur) => { acc.push(...cur.resources); return acc }, []);
-        const formattedLectures = reducedLectures.map(el => ({ title: el.title, finished: el.is_completed }))
-
-        return formattedLectures;
-    } catch (e) {
-        throw new Error("course")
-    }
-}
-
-async function getCourseTitle(courseId) {
-    try {
-        const rawCourseList = await fetch(`https://api.techit.education/api/course/v1/courses/${courseId}/sections`);
-        const courseList = await rawCourseList.json();
-
-        return courseList.title;
-    } catch (e) {
-        throw new Error("course title")
-    }
-}
-
-async function getUserInfo() {
-    const user = await getToken("persist:globWebPersistedStore");
-    const { name, email } = JSON.parse(JSON.parse(user).auth).profile;
-
-    return { name, email };
-}
-
 async function getProgress() {
     const user = await getUserInfo();
 
@@ -67,6 +19,60 @@ async function getProgress() {
     } catch (e) {
         throw new Error(`Cannot get ${e.message}`);
     }
+}
+
+async function getUserInfo() {
+    const userJSON = await getToken('persist:globWebPersistedStore');
+    const user = JSON.parse(userJSON);
+    console.log(user);
+    const auth = user.auth;
+    const profile = JSON.parse(auth).profile
+
+    console.log(user, auth, profile);
+    const { name, email } = profile;
+
+    return { name, email };
+}
+
+async function getToken(key) {
+    const token = await chrome.storage.session.get([key]);
+    return token[key];
+}
+
+async function getCurrentTab() {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+
+    return tab;
+}
+
+async function getCourseTitle(courseId) {
+    try {
+        const rawCourseList = await fetch(`https://api.techit.education/api/course/v1/courses/${courseId}/sections`);
+        const courseList = await rawCourseList.json();
+
+        return courseList.title;
+    } catch (e) {
+        throw new Error("course title")
+    }
+}
+
+async function getCourse(url) {
+    try {
+        const auth = await getToken("access_token");
+        const response = await fetch("https://api.techit.education/api/my/progress/v1/" + url, { headers: { "Authorization": `Bearer ${auth}` } });
+        const lectures = await response.json();
+        const reducedLectures = lectures.reduce((acc, cur) => { acc.push(...cur.resources); return acc }, []);
+        const formattedLectures = reducedLectures.map(el => ({ title: el.title, finished: el.is_completed }))
+
+        return formattedLectures;
+    } catch (e) {
+        throw new Error("course")
+    }
+}
+
+function parseData(obj) {
+    return obj.result;
 }
 
 function getClassroomId() {
@@ -126,7 +132,12 @@ if (classroom) {
 }
 
 (async () => {
-    const { name } = await getUserInfo();
-    const yourname = document.querySelector(".your-name");
-    yourname.innerText = name;
+    console.log("hi");
+    try {
+        const { name } = await getUserInfo();
+        const yourname = document.querySelector(".your-name");
+        yourname.innerText = name;
+    } catch (e) {
+        window.console.log(e);
+    }
 })()

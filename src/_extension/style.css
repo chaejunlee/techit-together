@@ -12,7 +12,7 @@ body {
   display: block;
 }
 
-.button {
+.button a {
   padding-block: 0.5rem;
   padding-inline: 0.5rem;
 }

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { kv } from "@vercel/kv";
+import {NextRequest, NextResponse} from "next/server";
+import {kv} from "@vercel/kv";
 
-interface OrganizedData {
+export interface OrganizedData {
   [key: string]: {
     [key: string]: Course;
   };
@@ -31,10 +31,7 @@ export interface PostCourses {
   course: Course;
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, {params}: {params: {id: string}}) {
   const id = params.id;
   const memberAndCourses = await kv.lrange(id, 0, -1);
 
@@ -60,7 +57,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  {params}: {params: {id: string}}
 ) {
   const json = (await request.json()) as PostCourses;
   const emailAndCourseCode = `${json.email}:${json.code}`;
@@ -76,8 +73,8 @@ export async function POST(
       !json.course
     ) {
       return NextResponse.json(
-        { success: false, error: "Missing fields" },
-        { status: 400 }
+        {success: false, error: "Missing fields"},
+        {status: 400}
       );
     }
 
@@ -92,8 +89,8 @@ export async function POST(
 
     await kv.set(emailAndCourseCode, json);
   } catch (e) {
-    return NextResponse.json({ success: false, error: e }, { status: 400 });
+    return NextResponse.json({success: false, error: e}, {status: 400});
   }
 
-  return NextResponse.json({ success: true }, { status: 200 });
+  return NextResponse.json({success: true}, {status: 200});
 }
