@@ -24,11 +24,9 @@ async function getProgress() {
 async function getUserInfo() {
     const userJSON = await getToken('persist:globWebPersistedStore');
     const user = JSON.parse(userJSON);
-    console.log(user);
     const auth = user.auth;
     const profile = JSON.parse(auth).profile
 
-    console.log(user, auth, profile);
     const { name, email } = profile;
 
     return { name, email };
@@ -119,7 +117,6 @@ async function buttonClick() {
         }
     } catch (e) {
         button.innerHTML = SYNC_BUTTON_CONTENT + '<span class="ml-2">❌</span>';
-        console.log(e.message);
     }
 }
 
@@ -151,7 +148,6 @@ if (classroom) {
 }
 
 (async () => {
-    console.log("hi");
     try {
         const { name } = await getUserInfo();
         const yourname = document.querySelector(".your-name");
